@@ -40,6 +40,10 @@ pipelines:
           allow_only_on_success: false
         jobs:
           publish_version:
+            environment_variables:
+              test: aGVsbG8K
+            secure_variables:
+               secure: AES:9V8Fw2oGBPKMv+cwc+G59w==:1MAiV0n3JcYV4Rgj4lgdLA==
             timeout: 5
             artifacts:              
             - build:

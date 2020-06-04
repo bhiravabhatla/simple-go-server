@@ -1,6 +1,6 @@
 format_version: 3
 pipelines:
-  simple-go-server:
+  '#{PIPELINE_NAME}':
     group: defaultGroup
     label_template: ${COUNT}
     lock_behavior: none
@@ -15,6 +15,7 @@ pipelines:
       BRANCH: master
       VERSION: '1.0'
       SECURE: 'AES:9V8Fw2oGBPKMv+cwc+G59w==:1MAiV0n3JcYV4Rgj4lgdLA=='
+      PIPELINE_NAME: 'simple-go-server'
     stages:
     - build:
         fetch_materials: true

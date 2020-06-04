@@ -2,7 +2,7 @@
 set -e
 
 GOCD_URL=${GOCD_URL:-gocd.example.com}
-PROJECT_NAME=simple-go-server
+export PROJECT_NAME=simple-go-server
 export VERSION=${VERSION:-1.2}
 export BRANCH_NAME="release-$VERSION"
 

@@ -38,7 +38,7 @@ set +e
 ssh -o StrictHostKeyChecking=no git@github.com
 set -e
 
-git clone git@github.com:shakirshakiel/release-pipelines.git
+git clone git@github.com:bhiravabhatla/release-pipelines.git
 git config --global user.name "gocd"
 git config --global user.email "gocd@gocd.org"
 git config --global push.default simple

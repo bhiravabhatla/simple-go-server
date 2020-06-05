@@ -35,8 +35,8 @@ status_code=$(grep 'HTTP/1.1' pipeline_exists | awk '{print $2}')
 if [ "$status_code" == "200" ]; then
   echo "Pipeline existing, copying the Parameters"
   curl -s -L -k "https://$GOCD_URL/go/api/admin/export/pipelines/$RELEASE_PIPELINE_NAME?plugin_id=yaml.config.plugin" -H 'Accept: application/vnd.go.cd.v1+json' | yq d - "pipelines.$PROJECT_NAME.template" > $PROJECT_NAME-release.gocd.yaml
-  yq w -i "$PROJECT_NAME-release.gocd.yaml" "pipelines.$PROJECT_NAME.template" "$template_name"
-  yq w -i "$PROJECT_NAME-release.gocd.yaml" "pipelines.$PROJECT_NAME.materials.*.branch" "$BRANCH_NAME"
+  yq w -i "$PROJECT_NAME-release.gocd.yaml" "pipelines.$RELEASE_PIPELINE_NAME.template" "$template_name"
+  yq w -i "$PROJECT_NAME-release.gocd.yaml" "pipelines.$RELEASE_PIPELINE_NAME.materials.*.branch" "$BRANCH_NAME"
 else
   # Build pipeline yaml file
   yq d $PROJECT_NAME.gocd.yaml 'pipelines.*.stages' | \

@@ -4,7 +4,7 @@ set -e
 GOCD_URL=${GOCD_URL:-gocd.example.com}
 PROJECT_NAME=simple-go-server
 RELEASE_PIPELINE_NAME=${RELEASE_PIPELINE_NAME:-simple-go-server-release}
-export VERSION=${VERSION:-1.2}
+export VERSION=${VERSION:-1.3}
 export BRANCH_NAME="release-$VERSION"
 
 # Update version in the template

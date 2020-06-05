@@ -2,8 +2,9 @@
 set -e
 
 GOCD_URL=${GOCD_URL:-gocd.example.com}
-export PROJECT_NAME=simple-go-server
-export VERSION=${VERSION:-1.2}
+PROJECT_NAME=simple-go-server
+RELEASE_PIPELINE_NAME=${RELEASE_PIPELINE_NAME:-simple-go-server-release}
+export VERSION=${VERSION:-1.3}
 export BRANCH_NAME="release-$VERSION"
 
 # Update version in the template
@@ -28,11 +29,20 @@ else
     -d "$(echo $body)"     
 fi
 
-# Build pipeline yaml file
-yq d $PROJECT_NAME.gocd.yaml 'pipelines.*.stages' | \
-    yq w - "pipelines.$PROJECT_NAME.template" "$template_name" | \
-    yq w - "pipelines.$PROJECT_NAME.materials.*.branch" "$BRANCH_NAME" | \
-    sed "s/$PROJECT_NAME:/$PROJECT_NAME-release:/g" > "$PROJECT_NAME-release.gocd.yaml"
+#Check if the release pipeline already exists
+curl -s -k -D pipeline_exists "https://$GOCD_URL/go/api/admin/pipelines/$RELEASE_PIPELINE_NAME" -H 'Accept: application/vnd.go.cd.v10+json'
+status_code=$(grep 'HTTP/1.1' pipeline_exists | awk '{print $2}')
+if [ "$status_code" == "200" ]; then
+  curl -s -L -k "https://$GOCD_URL/go/api/admin/export/pipelines/$RELEASE_PIPELINE_NAME?plugin_id=yaml.config.plugin" -H 'Accept: application/vnd.go.cd.v1+json' | yq d - "pipelines.$PROJECT_NAME.template" > $PROJECT_NAME-release.gocd.yaml
+  yq w -i "$PROJECT_NAME-release.gocd.yaml" "pipelines.$PROJECT_NAME.template" "$template_name"
+  yq w -i "$PROJECT_NAME-release.gocd.yaml" "pipelines.$PROJECT_NAME.materials.*.branch" "$BRANCH_NAME"
+else
+  # Build pipeline yaml file
+  yq d $PROJECT_NAME.gocd.yaml 'pipelines.*.stages' | \
+  yq w - "pipelines.$PROJECT_NAME.template" "$template_name" | \
+  yq w - "pipelines.$PROJECT_NAME.materials.*.branch" "$BRANCH_NAME" | \
+  sed "s/$PROJECT_NAME:/$PROJECT_NAME-release:/g" > "$PROJECT_NAME-release.gocd.yaml"
+fi
 
 set +e
 ssh -o StrictHostKeyChecking=no git@github.com

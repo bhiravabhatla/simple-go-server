@@ -14,6 +14,7 @@ pipelines:
     parameters:
       BRANCH: master
       VERSION: '1.0'
+    secure_variables:
       SECURE: 'AES:cJAltB5T1RwtyB/hqnZbLA==:8Tlb4ySNTQUZWVhEXJxKzA=='
     stages:
     - build:
@@ -43,8 +44,6 @@ pipelines:
           publish_version:
             environment_variables:
               test: '#{BRANCH}'
-            secure_variables:
-              SECURE: '#{SECURE}'
             timeout: 5
             artifacts:              
             - build:

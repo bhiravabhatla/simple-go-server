@@ -28,7 +28,7 @@ pipelines:
                     is_file: true
                     source: 'simple-go-server.gocd.yaml'
                     destination: ''
-                    pipeline: #{UPSTREAM_PIPELINE}
+                    pipeline: '#{UPSTREAM_PIPELINE}'
                     stage: publish_version
                     job: publish_version
                     run_if: passed
